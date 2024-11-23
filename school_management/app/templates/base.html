@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}School Management{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <!-- You can link to your CSS file here if you're using one -->
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/secretary/students">Manage Students</a></li>
+                <li><a href="/secretary/fees">Fee Management</a></li>
+                <!-- Add other navigation links as needed -->
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- Child templates will define the content block -->
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 School Management System</p>
+    </footer>
+</body>
+</html>
