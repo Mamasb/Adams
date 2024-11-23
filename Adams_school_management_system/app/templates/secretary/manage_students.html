@@ -25,6 +25,18 @@
     <button type="submit">Add Student</button>
 </form>
 
+<!-- Filter Students by Grade -->
+<form method="GET" style="margin-top: 20px;">
+    <label for="filter_grade">Filter by Grade: </label>
+    <select name="grade" id="filter_grade">
+        <option value="">All Grades</option>
+        {% for grade in grades %}
+        <option value="{{ grade }}" {% if grade == request.args.get('grade') %} selected {% endif %}>{{ grade }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Filter</button>
+</form>
+
 <!-- Student List -->
 <h3>Students</h3>
 <table>
@@ -56,4 +68,5 @@
         {% endfor %}
     </tbody>
 </table>
+
 {% endblock %}

@@ -8,7 +8,7 @@ class Student(db.Model):
     middle_name = db.Column(db.String(50), nullable=True)
     family_name = db.Column(db.String(50), nullable=False)
     grade = db.Column(db.String(20), nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
 
     @staticmethod
     def generate_admission_number():

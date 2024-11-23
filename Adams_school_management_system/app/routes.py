@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, flash
 from . import db
 from .models import Student
-from werkzeug.security import generate_password_hash  # Import this!
+from werkzeug.security import generate_password_hash
 
 def setup_routes(app):
     @app.route('/secretary/students', methods=['GET', 'POST'])
@@ -22,6 +22,18 @@ def setup_routes(app):
                 flash("Invalid grade selected!", "danger")
                 return redirect(url_for('manage_students'))
 
+            # Check if the student already exists
+            existing_student = Student.query.filter_by(
+                first_name=first_name,
+                middle_name=middle_name,
+                family_name=family_name,
+                grade=grade
+            ).first()
+
+            if existing_student:
+                flash(f"Student with the same details already exists: {first_name} {middle_name} {family_name}, Grade: {grade}", "danger")
+                return redirect(url_for('manage_students'))
+
             # Generate admission number and hash the password
             admission_number = Student.generate_admission_number()
             raw_password = "student123"  # Default password
@@ -36,6 +48,7 @@ def setup_routes(app):
                 grade=grade,
                 password_hash=password_hash
             )
+
             try:
                 db.session.add(student)
                 db.session.commit()
@@ -55,7 +68,7 @@ def setup_routes(app):
         grades = ["Playgroup", "PP1", "PP2", "Grade1", "Grade2", "Grade3", "Grade4",
                   "Grade5", "Grade6", "Grade7", "Grade8", "Grade9"]
 
-        return render_template('secretary/manage_students.html', students=students, grades=grades)
+        return render_template('secretary/manage_students.html', students=students, grades=grades, grade_filter=grade_filter)
 
     @app.route('/secretary/students/edit/<int:student_id>', methods=['GET', 'POST'])
     def edit_student(student_id):
