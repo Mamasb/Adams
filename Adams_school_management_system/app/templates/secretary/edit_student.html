@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Edit Student{% endblock %}
+{% block content %}
+<h2>Edit Student</h2>
+<form method="POST">
+    <label>First Name:</label>
+    <input type="text" name="first_name" value="{{ student.first_name }}" required>
+    <label>Middle Name:</label>
+    <input type="text" name="middle_name" value="{{ student.middle_name }}">
+    <label>Family Name:</label>
+    <input type="text" name="family_name" value="{{ student.family_name }}" required>
+    <label>Grade:</label>
+    <select name="grade">
+        {% for grade in ["Playgroup", "PP1", "PP2", "Grade1", "Grade2", "Grade3", "Grade4", "Grade5", "Grade6", "Grade7", "Grade8", "Grade9"] %}
+        <option value="{{ grade }}" {% if student.grade == grade %}selected{% endif %}>{{ grade }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Save Changes</button>
+</form>
+{% endblock %}
