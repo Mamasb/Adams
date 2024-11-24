@@ -1,3 +1,4 @@
+# __init__.py
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -14,7 +15,8 @@ def create_app():
 
     with app.app_context():
         from . import routes  # Import routes module
-        routes.setup_routes(app)  # Register routes
+        # Remove the setup_routes call and just import the routes
         db.create_all()
 
     return app
+

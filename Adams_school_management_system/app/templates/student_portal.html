@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if student.password_reset_required %}
+        <h2>You must change your password</h2>
+        <p>Your password is still set to the default password. Please change it to proceed.</p>
+        <p><a href="{{ url_for('reset_password') }}" class="btn btn-primary">Change your password</a></p>
+    {% else %}
+        <h2>Welcome, {{ student.first_name }}!</h2>
+        <p>Here are your details:</p>
+
+        <ul>
+            <li><strong>Admission Number:</strong> {{ student.admission_number }}</li>
+            <li><strong>Full Name:</strong> {{ student.first_name }} {{ student.middle_name }} {{ student.family_name }}</li>
+            <li><strong>Grade:</strong> {{ student.grade }}</li>
+        </ul>
+
+        <!-- Change Password Button -->
+        <p><a href="{{ url_for('reset_password') }}" class="btn btn-primary">Change Password</a></p>
+
+        <p><a href="{{ url_for('logout') }}">Logout</a></p>
+    {% endif %}
+{% endblock %}
