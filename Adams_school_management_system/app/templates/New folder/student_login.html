@@ -1,0 +1,30 @@
+{% block content %}
+    <h2>Student Login</h2>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Login Form -->
+    <form method="POST" action="{{ url_for('student_login') }}" class="form-container">
+        <div class="form-group">
+            <label for="admission_number">Admission Number</label>
+            <input type="text" name="admission_number" id="admission_number" placeholder="Enter your Admission Number" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" placeholder="Enter your Password" required>
+        </div>
+
+        <button type="submit" class="btn-submit">Login</button>
+    </form>
+
+    <!-- Forgot Password -->
+    <p>If you have forgotten your password, <a href="{{ url_for('reset_password') }}">click here</a> to reset it.</p>
+{% endblock %}
