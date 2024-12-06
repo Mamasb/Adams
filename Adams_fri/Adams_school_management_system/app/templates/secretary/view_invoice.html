@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Invoice</title>
+    <style>
+        .buttons {
+            margin-top: 20px;
+        }
+        .buttons button {
+            margin: 5px;
+        }
+        iframe {
+            border: none;
+            width: 100%;
+            height: 600px;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h3>Invoice for {{ invoice.student.first_name }} {{ invoice.student.family_name }}</h3>
+
+    <p><strong>Total Fees:</strong> {{ total_fees }}</p>
+    <p><strong>Amount Paid:</strong> {{ amount_paid }}</p>
+    <p><strong>Balance Due:</strong> {{ balance_due }}</p>
+
+    <h4>Fee Breakdown:</h4>
+    <table>
+        <tr>
+            <th>Fee Item</th>
+            <th>Amount</th>
+        </tr>
+        {% for item in fee_items %}
+        <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.amount }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <!-- Embed PDF in an iframe -->
+    <h4>View Invoice (PDF):</h4>
+    <iframe src="{{ url_for('generate_invoice', student_id=invoice.student.id) }}"></iframe>
+
+    <!-- Buttons for Download and Print -->
+    <div class="buttons">
+        <button onclick="downloadPDF()">Download PDF</button>
+        <button onclick="window.print()">Print PDF</button>
+    </div>
+
+    <!-- Back to Student Invoices -->
+    <a href="{{ url_for('student_invoices', student_id=invoice.student.id) }}">Back to Student Invoices</a>
+
+    <script>
+        function downloadPDF() {
+            var link = document.createElement('a');
+            link.href = "{{ url_for('generate_invoice', student_id=invoice.student.id) }}";
+            link.download = 'invoice.pdf';  // Set the download name
+            link.click();  // Trigger the download
+        }
+    </script>
+</body>
+</html>

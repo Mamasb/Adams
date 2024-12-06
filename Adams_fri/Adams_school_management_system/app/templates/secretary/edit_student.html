@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Edit Student Details</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="first_name">First Name</label>
+            <input type="text" name="first_name" class="form-control" value="{{ student.first_name }}" required>
+        </div>
+        <div class="form-group">
+            <label for="middle_name">Middle Name</label>
+            <input type="text" name="middle_name" class="form-control" value="{{ student.middle_name }}">
+        </div>
+        <div class="form-group">
+            <label for="family_name">Family Name</label>
+            <input type="text" name="family_name" class="form-control" value="{{ student.family_name }}" required>
+        </div>
+        <div class="form-group">
+            <label for="grade">Grade</label>
+            <select name="grade" class="form-control">
+                <option value="Playgroup" {% if student.grade == 'Playgroup' %}selected{% endif %}>Playgroup</option>
+                <option value="Grade 1" {% if student.grade == 'Grade 1' %}selected{% endif %}>Grade 1</option>
+                <option value="Grade 2" {% if student.grade == 'Grade 2' %}selected{% endif %}>Grade 2</option>
+                <!-- Add options for other grades -->
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="food">Food</label>
+            <!-- Add logic to check for an associated invoice's food_fee -->
+            <input type="checkbox" name="food" {% if student.invoice and student.invoice.food_fee > 0 %}checked{% endif %}>
+        </div>
+        <div class="form-group">
+            <label for="transport">Transport</label>
+            <select name="transport" class="form-control">
+                <option value="two_way_town" {% if student.transport_fee == 7000 %}selected{% endif %}>Two-way Town</option>
+                <option value="two_way_oma" {% if student.transport_fee == 8000 %}selected{% endif %}>Two-way OMA</option>
+                <option value="one_way" {% if student.transport_fee == 4000 %}selected{% endif %}>One-way</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+</div>
+{% endblock %}

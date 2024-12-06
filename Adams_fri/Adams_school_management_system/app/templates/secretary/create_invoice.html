@@ -1,0 +1,26 @@
+<form method="POST">
+    <h3>Fees for {{ student.first_name }} {{ student.family_name }}</h3>
+
+    <!-- Fee Items -->
+    <label for="nursery_fees">Nursery Fees:</label>
+    <input type="text" name="nursery_fees" value="Nursery Fees" readonly>
+    <input type="number" name="nursery_fees_amount" placeholder="Amount" required><br>
+
+    <label for="transport">Transport:</label>
+    <input type="text" name="transport" value="Transport" readonly>
+    <input type="number" name="transport_amount" placeholder="Amount" required><br>
+
+    <label for="food">Food:</label>
+    <input type="text" name="food" value="Food" readonly>
+    <input type="number" name="food_amount" placeholder="Amount" required><br>
+
+    <label for="uniform">Uniform:</label>
+    <input type="text" name="uniform" value="Uniform" readonly>
+    <input type="number" name="uniform_amount" placeholder="Amount" required><br>
+
+    <!-- Amount Paid -->
+    <label for="amount_paid">Amount Paid:</label>
+    <input type="number" name="amount_paid" placeholder="Amount Paid" required><br>
+
+    <button type="submit">Create Invoice</button>
+</form>

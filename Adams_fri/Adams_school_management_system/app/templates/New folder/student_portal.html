@@ -1,0 +1,13 @@
+{% block content %}
+    <h2>Welcome, {{ student.first_name  }} {{ student.middle_name }}!</h2>
+    <p>Here are your details:</p>
+
+    <ul>
+        <li><strong>Admission Number:</strong> {{ student.admission_number }}</li>
+        <li><strong>Full Name:</strong> {{ student.first_name }} {{ student.middle_name }} {{ student.family_name }}</li>
+        <li><strong>Grade:</strong> {{ student.grade }}</li>
+    </ul>
+
+    <p><a href="{{ url_for('logout') }}">Logout</a></p>
+	<p><a href="{{ url_for('reset_password') }}">Resset Password</a></p>
+{% endblock %}

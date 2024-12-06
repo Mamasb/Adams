@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adams School Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('main.secretary_dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('main.manage_students') }}">Manage Students</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>Welcome to Adams School Management System</h1>
+        <p>Use the navigation bar to explore features.</p>
+    </main>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Welcome, {{ student.first_name }} {{ student.family_name }}!</h2>
+    <p><strong>Admission Number:</strong> {{ student.admission_number }}</p>
+    <p><strong>Grade:</strong> {{ student.grade }}</p>
+    <p><strong>Fees Paid:</strong> {{ student.fees_paid }}</p>
+    <p><strong>Balance:</strong> {{ student.balance }}</p>
+    <a href="{{ url_for('reset_password') }}" class="btn btn-warning">Reset Password</a>
+</div>
+{% endblock %}

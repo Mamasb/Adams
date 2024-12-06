@@ -1,0 +1,14 @@
+<!-- templates/secretary/student_action.html -->
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Student Action</h2>
+
+<p>Are you sure you want to perform an action on the student <strong>{{ student.first_name }} {{ student.middle_name }} {{ student.family_name }}</strong>?</p>
+
+<form method="post">
+    <button type="submit" name="action" value="delete">Delete</button>
+    <button type="submit" name="action" value="archive">Archive</button>
+</form>
+
+{% endblock %}
