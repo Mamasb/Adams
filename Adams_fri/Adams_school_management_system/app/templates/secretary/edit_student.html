@@ -4,41 +4,224 @@
 <div class="container mt-5">
     <h2>Edit Student Details</h2>
     <form method="POST">
+        {{ form.hidden_tag() }}
+        
+        <!-- Name and Grade -->
         <div class="form-group">
             <label for="first_name">First Name</label>
-            <input type="text" name="first_name" class="form-control" value="{{ student.first_name }}" required>
+            {{ form.first_name(class="form-control") }}
         </div>
         <div class="form-group">
             <label for="middle_name">Middle Name</label>
-            <input type="text" name="middle_name" class="form-control" value="{{ student.middle_name }}">
+            {{ form.middle_name(class="form-control") }}
         </div>
         <div class="form-group">
             <label for="family_name">Family Name</label>
-            <input type="text" name="family_name" class="form-control" value="{{ student.family_name }}" required>
+            {{ form.family_name(class="form-control") }}
         </div>
         <div class="form-group">
             <label for="grade">Grade</label>
-            <select name="grade" class="form-control">
-                <option value="Playgroup" {% if student.grade == 'Playgroup' %}selected{% endif %}>Playgroup</option>
-                <option value="Grade 1" {% if student.grade == 'Grade 1' %}selected{% endif %}>Grade 1</option>
-                <option value="Grade 2" {% if student.grade == 'Grade 2' %}selected{% endif %}>Grade 2</option>
-                <!-- Add options for other grades -->
+            {{ form.grade(class="form-control") }}
+        </div>
+
+        <!-- Fee Details -->
+        <div class="form-group">
+            <h4>Optional Fees</h4>
+            <div>
+                <input type="checkbox" id="food" name="food"> Food - Ksh 3500<br>
+                <input type="checkbox" id="text_books_fee" name="text_books_fee"> Text Books - Ksh 6000<br>
+                <input type="checkbox" id="exercise_books_fee" name="exercise_books_fee" checked> Exercise Books - Ksh 500 (termly)<br>
+                <input type="checkbox" id="assesment_tool_fee" name="assesment_tool_fee"> Assessment Tools - Ksh 300<br>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <h4>Transport</h4>
+            <select class="form-control" id="transport_mode">
+                <option value="None">None - Ksh 0</option>
+                <option value="OneWay">One-Way - Ksh 4500</option>
+                <option value="TwoWayTown">Two-Way (Town) - Ksh 7000</option>
+                <option value="TwoWayUma">Two-Way (Uma) - Ksh 8000</option>
             </select>
         </div>
+
+        <!-- Fee Breakdown -->
+        <h4>Fee Breakdown</h4>
+        <ul id="fee-breakdown">
+            <li>Tuition Fee: Ksh <span id="grade-fee">0</span></li>
+            <li>Food: Ksh <span id="food-fee">0</span></li>
+            <li>Text Books: Ksh <span id="text-books-fee">0</span></li>
+            <li>Exercise Books: Ksh <span id="exercise-books-fee">500</span></li>
+            <li>Assessment Tools: Ksh <span id="assessment-tools-fee">0</span></li>
+            <li>Transport: Ksh <span id="transport-fee">0</span></li>
+            <li>Activity Fee: Ksh <span id="activity-fee">0</span></li>
+            <li>Diary Fee: Ksh <span id="diary-fee">0</span></li>
+            <li>Admission Fee: Ksh <span id="admission-fee">0</span></li>
+        </ul>
+
+        <!-- Total Fees -->
+        <h4>Total Fees: Ksh <span id="total">0</span></h4>
+
         <div class="form-group">
-            <label for="food">Food</label>
-            <!-- Add logic to check for an associated invoice's food_fee -->
-            <input type="checkbox" name="food" {% if student.invoice and student.invoice.food_fee > 0 %}checked{% endif %}>
+            <button type="submit" class="btn btn-primary custom-btn">Save Changes</button>
+            <button type="button" class="btn btn-danger custom-btn" id="delete-button">Delete</button>
+            <button type="button" class="btn btn-success custom-btn" id="generate-invoice">Generate Invoice</button>
         </div>
-        <div class="form-group">
-            <label for="transport">Transport</label>
-            <select name="transport" class="form-control">
-                <option value="two_way_town" {% if student.transport_fee == 7000 %}selected{% endif %}>Two-way Town</option>
-                <option value="two_way_oma" {% if student.transport_fee == 8000 %}selected{% endif %}>Two-way OMA</option>
-                <option value="one_way" {% if student.transport_fee == 4000 %}selected{% endif %}>One-way</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
 </div>
+
+<script>
+    // Fee structure
+    const gradeFees = {
+        "Playgroup": 6500,
+        "PP1": 6500,
+        "PP2": 6500,
+        "Grade1": 8500,
+        "Grade2": 8500,
+        "Grade3": 8500,
+        "Grade4": 9000,
+        "Grade5": 9000,
+        "Grade6": 9000,
+        "Grade7": 12000,
+        "Grade8": 12000,
+        "Grade9": 12000,
+    };
+
+    const optionalFees = {
+        "food": 3500,
+        "text_books_fee": 6000,
+        "exercise_books_fee": 500, // termly
+        "assesment_tool_fee": 300
+    };
+
+    const transportFees = {
+        "None": 0,
+        "OneWay": 4500,
+        "TwoWayTown": 7000,
+        "TwoWayUma": 8000
+    };
+
+    const defaultFees = {
+        "activity_fee": 200,
+        "diary_fee": 100,
+        "admission_fee": 1000,  // Playgroup students
+        "assesment_tool_fee": 300 // Default for PP1 to Grade 4
+    };
+
+    // Function to calculate and update the total fees
+    function updateTotal() {
+        let total = 0;
+        
+        // Get grade and base fee
+        const gradeSelect = document.getElementById("{{ form.grade.id }}");
+        const grade = gradeSelect.value;
+        const gradeFee = gradeFees[grade] || 0;
+        total += gradeFee;
+
+        // Update the breakdown for grade fee
+        document.getElementById("grade-fee").textContent = gradeFee;
+
+        // Add default fees for PP1 to Grade 4
+        if (grade === "Playgroup") {
+            total += defaultFees.activity_fee;
+            document.getElementById("activity-fee").textContent = defaultFees.activity_fee;
+
+            total += defaultFees.diary_fee;
+            document.getElementById("diary-fee").textContent = defaultFees.diary_fee;
+
+            total += defaultFees.admission_fee;
+            document.getElementById("admission-fee").textContent = defaultFees.admission_fee;
+
+            total += defaultFees.assesment_tool_fee;
+            document.getElementById("assessment-tools-fee").textContent = defaultFees.assesment_tool_fee;
+        } else {
+            document.getElementById("admission-fee").textContent = 0;
+            document.getElementById("assessment-tools-fee").textContent = 0;
+        }
+
+        // Add selected optional fees and update breakdown
+        const foodFee = document.getElementById("food").checked ? optionalFees["food"] : 0;
+        total += foodFee;
+        document.getElementById("food-fee").textContent = foodFee;
+
+        const textBooksFee = (grade === "Grade1" || grade === "Grade2" || grade === "Grade3" || grade === "Grade4" || grade === "Grade5" || grade === "Grade6" || grade === "Grade7" || grade === "Grade8" || grade === "Grade9") && document.getElementById("text_books_fee").checked ? optionalFees["text_books_fee"] : 0;
+        total += textBooksFee;
+        document.getElementById("text-books-fee").textContent = textBooksFee;
+
+        const exerciseBooksFee = document.getElementById("exercise_books_fee").checked ? optionalFees["exercise_books_fee"] : 0;
+        total += exerciseBooksFee;
+        document.getElementById("exercise-books-fee").textContent = exerciseBooksFee;
+
+        const assessmentToolsFee = (grade === "PP1" || grade === "PP2" || grade === "Grade1" || grade === "Grade2" || grade === "Grade3" || grade === "Grade4") && document.getElementById("assesment_tool_fee").checked ? optionalFees["assesment_tool_fee"] : 0;
+        total += assessmentToolsFee;
+        document.getElementById("assessment-tools-fee").textContent = assessmentToolsFee;
+
+        // Add selected transport fee and update breakdown
+        const transportSelect = document.getElementById("transport_mode");
+        const transportFee = transportFees[transportSelect.value];
+        total += transportFee;
+        document.getElementById("transport-fee").textContent = transportFee;
+
+        // Update the total fee in the HTML
+        document.getElementById("total").textContent = total;
+    }
+
+    // Event listeners to recalculate on any change
+    document.getElementById("{{ form.grade.id }}").addEventListener("change", updateTotal);
+    document.getElementById("food").addEventListener("change", updateTotal);
+    document.getElementById("text_books_fee").addEventListener("change", updateTotal);
+    document.getElementById("exercise_books_fee").addEventListener("change", updateTotal);
+    document.getElementById("assesment_tool_fee").addEventListener("change", updateTotal);
+    document.getElementById("transport_mode").addEventListener("change", updateTotal);
+
+    // Initialize the total when the page loads
+    document.addEventListener("DOMContentLoaded", updateTotal);
+</script>
+
+<style>
+    /* Starehe Boys High School colors */
+    .custom-btn {
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        border-radius: 5px;
+        padding: 12px 20px;
+        margin: 5px;
+    }
+
+    .btn-primary.custom-btn {
+        background-color: #003366; /* Blue */
+        color: white;
+    }
+
+    .btn-primary.custom-btn:hover {
+        background-color: #002244;
+        transform: scale(1.05);
+    }
+
+    .btn-danger.custom-btn {
+        background-color: #B50000; /* Maroon */
+        color: white;
+    }
+
+    .btn-danger.custom-btn:hover {
+        background-color: #8F0000;
+        transform: scale(1.05);
+    }
+
+    .btn-success.custom-btn {
+        background-color: #0B5A0B; /* Green */
+        color: white;
+    }
+
+    .btn-success.custom-btn:hover {
+        background-color: #074407;
+        transform: scale(1.05);
+    }
+
+    /* Make the page responsive */
+    @media (max-width: 768px) {
+        .container {
+            margin: 0 15px;
+        }
+    }
+</style>
 {% endblock %}
